@@ -1,2 +1,2 @@
-# BOxi
-Business Objects XI (SDK et VBscript)
+## BOxi
+Business Objects XI (SDK and VBscript)

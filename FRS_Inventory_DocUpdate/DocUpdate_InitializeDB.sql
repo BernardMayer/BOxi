@@ -4,6 +4,22 @@
 
 -- 20171109 Bernard Mayer 
 
+-- Les traces des inventaires
+drop table if exists run;
+create table run (
+	run_id integer not null,
+	run_start_epoch integer,
+	run_start_ts timestamp,
+	run_start_dt datetime,
+	run_stop_epoch integer,
+	run_stop_ts timestamp,
+	run_stop_dt datetime
+);
+create unique index run_idx_upk on run(run_id);
+insert into run (run_id, run_start_epoch, run_start_ts, run_start_dt)
+values (0, 0, '20171109221300', '09/11/2017 22:13:00')
+;
+
 -- Les differents plateformes / serveur
 DROP TABLE IF EXISTS CRs;
 CREATE TABLE CRs (
@@ -37,3 +53,5 @@ VALUES
 (1, 'FullClient', 'Doc .rep'),
 (2, 'NEHOM', 'NeHom')
 ;
+
+vacuum;

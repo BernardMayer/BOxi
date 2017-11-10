@@ -5,53 +5,158 @@
 -- 20171109 Bernard Mayer 
 
 -- Les traces des inventaires
-drop table if exists run;
-create table run (
-	run_id integer not null,
-	run_start_epoch integer,
-	run_start_ts timestamp,
-	run_start_dt datetime,
-	run_stop_epoch integer,
-	run_stop_ts timestamp,
-	run_stop_dt datetime
+DROP TABLE IF EXISTS RUN;
+CREATE TABLE RUN (
+	RUN_ID INTEGER NOT NULL,
+	RUN_START_EPOCH INTEGER,
+	RUN_START_TS TIMESTAMP,
+	RUN_START_DT TEXT, -- DATETIME,
+	RUN_START_D DATE, 
+	RUN_STOP_EPOCH INTEGER,
+	RUN_STOP_TS TIMESTAMP,
+	RUN_STOP_DT TEXT, -- DATETIME,
+	RUN_STOP_D DATE
 );
-create unique index run_idx_upk on run(run_id);
-insert into run (run_id, run_start_epoch, run_start_ts, run_start_dt)
-values (0, 0, '20171109221300', '09/11/2017 22:13:00')
+INSERT INTO RUN (RUN_ID, RUN_START_EPOCH, RUN_START_TS, RUN_START_DT, RUN_START_D, RUN_STOP_EPOCH, RUN_STOP_TS, RUN_STOP_DT, RUN_STOP_D)
+VALUES (
+0, 
+STRFTIME('%s','now'), 
+STRFTIME('%Y%m%d%H%M%S','now'), 
+DATETIME('now'), 
+STRFTIME('%Y%m%d','now'),
+STRFTIME('%s','now'), 
+STRFTIME('%Y%m%d%H%M%S','now'), 
+DATETIME('now'), 
+STRFTIME('%Y%m%d','now')
+);
+CREATE UNIQUE INDEX RUN_IDX_UPK 
+	ON RUN(RUN_ID)
 ;
 
--- Les differents plateformes / serveur
-DROP TABLE IF EXISTS CRs;
-CREATE TABLE CRs (
+-- Les differents plateformes / serveurs
+DROP TABLE IF EXISTS CRS;
+CREATE TABLE CRS (
 	CR_ID INTEGER NOT NULL,
-	BO_Key VARCHAR(7) NOT NULL,
-	CR_Label VARCHAR(77),
-	PRIMARY KEY(CR_ID, BO_Key)
+	BO_KEY VARCHAR(7) NOT NULL,
+	CR_LABEL VARCHAR(77),
+	PRIMARY KEY(CR_ID, BO_KEY)
 )
 ;
-CREATE UNIQUE INDEX CRs_idx_UPK ON CRs(CR_ID, BO_Key)
+CREATE UNIQUE INDEX CRS_IDX_UPK 
+	ON CRS(CR_ID, BO_KEY)
 ;
-INSERT INTO CRs (CR_ID, BO_Key, CR_Label)
+INSERT INTO CRS (CR_ID, BO_KEY, CR_LABEL)
 VALUES 
-(1, 'DevTU', 'DevTu'),
-(2, 'NEHOM', 'NeHom')
+(1, 'DEVTU', 'DEVTU'), 
+(2, 'DEVTUO', 'DEVTUO'), 
+(3, 'NEHOM', 'NEHOM'), 
+(4, 'REFV1', 'REFV1'), 
+(5, 'HPV1B3', 'HPV1B3'), 
+(6, 'VMOE', 'VMOE'), 
+(7, 'VMOE2', 'VMOE2'), 
+(8, 'VMOA', 'VMOA'), 
+(9, 'VMOA2', 'VMOA2'), 
+(10, 'AL', 'AL'), 
+(11, 'AM', 'AM'), 
+(12, 'AO', 'AO'), 
+(13, 'AP', 'AP'), 
+(14, 'AQ', 'Aquitaine'), 
+(15, 'AV', 'Atlantique-Vendee'), 
+(16, 'BI', 'BI'), 
+(17, 'BP', 'BP'), 
+(18, 'CA', 'CA'), 
+(19, 'CE', 'CE'), 
+(20, 'CL', 'CL'), 
+(21, 'CO', 'CO'), 
+(22, 'CP', 'CP'), 
+(23, 'CR', 'CR'), 
+(24, 'CS', 'CS'), 
+(25, 'DP', 'DP'), 
+(26, 'FC', 'FC'), 
+(27, 'FI', 'FI'), 
+(28, 'GU', 'Guadeloupe'), 
+(29, 'IF', 'IF'), 
+(30, 'IV', 'IV'), 
+(31, 'JP', 'JP'), 
+(32, 'KP', 'KP'), 
+(33, 'LA', 'LA'), 
+(34, 'LO', 'LO'), 
+(35, 'LP', 'LP'), 
+(36, 'MA', 'Martinique'), 
+(37, 'MO', 'MO'), 
+(38, 'NE', 'NE'), 
+(39, 'NF', 'NF'), 
+(40, 'NM', 'NM'), 
+(41, 'NO', 'NO'), 
+(42, 'NS', 'NS'), 
+(43, 'PG', 'PG'), 
+(44, 'RE', 'RE'), 
+(45, 'RP', 'RP'), 
+(46, 'SM', 'SM'), 
+(47, 'TO', 'TO'), 
+(48, 'TP', 'TP'), 
+(49, 'VF', 'Val de France')
 ;
 
 -- Les differents types de documents BO
-DROP TABLE IF EXISTS BO_Doctypes;
-CREATE TABLE BO_Doctypes (
-	BO_Doctype_ID INTEGER NOT NULL,
-	BO_Kind VARCHAR(77) NOT NULL,
-	Doctype_Label VARCHAR(77),
-	PRIMARY KEY(BO_Doctype_ID, BO_Kind)
+DROP TABLE IF EXISTS BO_DOC_TYPES;
+CREATE TABLE BO_DOC_TYPES (
+	BO_DOCTYPE_ID INTEGER NOT NULL,
+	BO_KIND VARCHAR(77) NOT NULL,
+	DOCTYPE_LABEL VARCHAR(77),
+	PRIMARY KEY(BO_DOCTYPE_ID, BO_KIND)
 )
 ;
-CREATE UNIQUE INDEX BO_Doctypes_idx_UPK ON BO_Doctypes(BO_Doctype_ID, BO_Kind)
+CREATE UNIQUE INDEX BO_DOC_TYPES_IDX_UPK 
+	ON BO_DOC_TYPES(BO_DOCTYPE_ID, BO_KIND)
 ;
-INSERT INTO BO_Doctypes (BO_Doctype_ID, BO_Kind, Doctype_Label)
+INSERT INTO BO_DOC_TYPES (BO_DOCTYPE_ID, BO_KIND, DOCTYPE_LABEL)
 VALUES 
-(1, 'FullClient', 'Doc .rep'),
-(2, 'NEHOM', 'NeHom')
+(0, '?', 'Nature inconnue'),
+(1,  'FullClient', 'Document .rep'), 
+(2,  'Agnostic',  'Agnostic'), 
+(3,  'CrystalReport',  'CrystalReport'), 
+(4,  'Excel',  'Excel'), 
+(5,  'FullClientAddin',  'FullClientAddin'), 
+(6,  'Hyperlink',  'Hyperlink'), 
+(7,  'ObjectPackage',  'ObjectPackage'), 
+(8,  'Pdf',  'Pdf'), 
+(9,  'Powerpoint',  'Powerpoint'), 
+(10, 'Program', 'Program'), 
+(11, 'Publication', 'Publication'), 
+(12, 'Txt', 'Txt'), 
+(13, 'Webi', 'Webi'), 
+(14, 'Word', 'Word')
 ;
 
-vacuum;
+-- Liste des documents BO de toutes les plateformes
+DROP TABLE IF EXISTS BO_DOCS_LISTE;
+CREATE TABLE BO_DOCS_LISTE (
+	CR_ID INTEGER NOT NULL,
+	SI_ID INTEGER NOT NULL,
+	SI_CUID TEXT NOT NULL,
+	SI_NAME TEXT NOT NULL,
+	SI_KIND TEXT,
+	DOC_FOLDER TEXT,
+	DT_CREATE TEXT,
+	DT_MODIF TEXT NOT NULL
+);
+CREATE UNIQUE INDEX BO_DOCS_LISTE_IDX_UPK 
+	ON BO_DOCS_LISTE(CR_ID, SI_CUID);
+CREATE UNIQUE INDEX BO_DOCS_LISTE_IDX_SEARCHDOC 
+	ON BO_DOCS_LISTE(CR_ID, SI_ID);
+
+
+-- Liste des datetime de modifications des documents
+DROP TABLE IF EXISTS BO_DOCS_MODIFS;
+CREATE TABLE BO_DOCS_MODIFS (
+	CR_ID INTEGER NOT NULL,
+	SI_ID INTEGER NOT NULL,
+	DT_MODIF TEXT NOT NULL,
+	D_MODIF TEXT
+);	
+CREATE UNIQUE INDEX BO_DOCS_MODIFS_IDX_UPK 
+	ON BO_DOCS_MODIFS(CR_ID, SI_ID, DT_MODIF);
+
+-- VACUUM attached DB if sqlite > 3.15
+VACUUM;

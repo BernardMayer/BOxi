@@ -1,0 +1,6 @@
+# Eclipse
+.metadata/
+# Je ne sais pas, mais en relation avec PyDev
+.project
+# Eclipse PyDev
+.pydevproject

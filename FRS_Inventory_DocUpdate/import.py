@@ -97,21 +97,10 @@ mTimeIso = time.strftime("%Y%m%d%H%M%S", mTimeStruct)
 
 basename = os.path.basename(frsFilename)
 
-## Verification de la presence de ces donnees ...
-#sql = "SELECT DISTINCT fileName, fileTsWrite FROM nmeaFiles WHERE fileName LIKE '%" + "ZZZ" + basename + "%' OR fileCheck LIKE '" + fileCheck + "ZZZ" + "' OR fileTsWrite = " + mTimeIso + "999" + ";"
-sql = "SELECT DISTINCT FileName, FileTsWrite FROM nmeaFiles WHERE FileName LIKE '%" + basename + "%' OR FileCheck LIKE '" + fileCheck + "' OR FileTsWrite = " + mTimeIso + ";"
-cursor.execute(sql)
-res = cursor.fetchone()
-#print("res =", res)
-if (res != None) :
-    (candidatName, candidatTsWrite) = res
-    print("Un fichier " + candidatName + " du " + str(candidatTsWrite) + ", fort similaire, existe dans la base.")
-    db.close()
-    quit()
 
 ## INSERT des metadonnees
 try :
-    ## feed nmeaFiles
+    ## Heure de debut dans la table RUN
     sql = "INSERT INTO nmeaFiles(FileName, FileCheck, FileTsWrite, FileTsImport) VALUES ('" + basename + "', '" + fileCheck + "', " + mTimeIso + ", " + iso8601 + ");"
     cursor.execute(sql)
     sql = "SELECT LAST_INSERT_ROWID();" # print(cursor.lastrowid)
@@ -139,10 +128,13 @@ try :
                 id = line[0:commaPos]
                 val = line[commaPos + 1:]
             cursor.execute(sql, (fileId, nLine, id, val))    
-    ## feed nmeaTraces
+    ## Heure de fin dans la table RUN
     sql = "INSERT INTO nmeaTraces(FileID, TraceName, LineStart, LineStop, TraceInfo) VALUES(?, ?, ?, ?, ?);"
     cursor.execute(sql, (fileId, basename, 1, nLine, traceInfo))
     db.commit()
+    
+    ## 
+    
     print("Import de " + str(nLine) + " lignes (FileID:" + str(fileId) + ")")
 except Exception as e :
     db.rollback()

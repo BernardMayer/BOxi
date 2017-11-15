@@ -95,7 +95,7 @@ VALUES
 (895, 'CO', 'Centre-Ouest'), 
 (900, 'GU', 'Guadeloupe'), 
 (902, 'MA', 'Martinique'), 
-(903, 'RE', 'Reunion'),
+(903, 'RE', 'Reunion')
 ;
 
 -- Les differents types de documents BO

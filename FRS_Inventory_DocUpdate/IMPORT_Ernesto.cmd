@@ -5,30 +5,29 @@
 @rem @CHCP 1252
 
 @set homeDir=".\"
-@set sqlBin="D:\myTools\sqlite\sqlite3.exe"
-@set sqlHome="D:\RepoS\BOxi\FRS_Inventory_DocUpdate"
-@set sqlDB="%sqlHome%\BO_inventories.sqlite"
-@set pyBin="D:\myTools\Python\Python36\python.exe"
+@set sqlBin="C:\CAT_dskD\myTools\sqlite\sqlite3.exe"
+@set sqlHome="C:\RepoGit\BOxi\FRS_Inventory_DocUpdate"
+@set sqlDB=%sqlHome%\BO_inventories.sqlite
+@set pyBin="C:\CAT_dskD\myTools\Python\Python36\python.exe"
 @rem @set dataInHome="D:\BOXI\Liste_Docs_TtesCrs\data"
-@set dataInHome="D:\BOXI\Liste_Docs_TtesCrs\Data-FullClientOnly-ToutesCaisses"
-@set dataInPattern="Liste_Docs_*.csv"
+@rem @set dataInHome="D:\BOXI\Liste_Docs_TtesCrs\Data-FullClientOnly-ToutesCaisses"
+@rem @set dataInPattern="Liste_Docs_*.csv"
 @set importScript=import.py
 
-
 @REM Compilation des fichiers inventaires des FRS en 1 seul
-@set datasInDir="C:\temp\Data-FullClientOnly-ToutesCaisses"
+@set datasInDir=C:\temp\Data-FullClientOnly-ToutesCaisses
 @set datasInPattern="Liste_Docs_*.csv"
-@set tmpDir="c:\temp\aaa"
-@set tmpFile="FRS_Inventory_DocUpdate.tmp"
+@set tmpDir=%datasInDir%\compil
+@set tmpFile=FRS_Inventory_DocUpdate.tmp
 if not exist %tmpDir% mkdir %tmpDir%
 copy %datasInDir%\%datasInPattern% %tmpDir%\%tmpFile%
 
 @echo Alimentation de la DB
 set BO_IMPORT_INVENTORY_RUN_ID=7
-@rem %pyBin% %importScript% "D:\BOXI\Liste_Docs_TtesCrs\Data-FullClientOnly-ToutesCaisses\Liste_Docs_CL_Documents communautaires.csv" %sqlDB%
+%pyBin% %importScript% %tmpDir%\%tmpFile% %sqlDB%
 
 pause
-del %tmpDir%\%tmpFile%
+REM del %tmpDir%\%tmpFile%
 
 goto EOF
 

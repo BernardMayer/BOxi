@@ -1,0 +1,17 @@
+Agnostic
+CrystalReport
+Excel
+FavoritesFolder
+FullClient
+FullClientAddin
+Hyperlink
+ObjectPackage
+Pdf
+Powerpoint
+Program
+Publication
+Rtf
+Shortcut
+Txt
+Webi
+Word

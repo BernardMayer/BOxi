@@ -61,7 +61,7 @@ tsNow = dtNow.timestamp()
 #   - Ordre des colonnes (colsName)
 fileInSep = '\t' # "|"
 #columnsOrder = (1, 3, 2, 5, 4, 6, 7, 8)
-colsName = ("CR_ID", "SI_CUID", "SI_ID", "SI_KIND", "SI_NAME", "DOC_FOLDER", "DT_CREATE", "DT_MODIF")
+colsName = ("CR_ID", "SI_CUID", "SI_ID", "SI_KIND", "SI_NAME", "DOC_FOLDER", "SI_CREATION_TIME", "SI_UPDATE_TS")
 nbrCols = len(colsName)
 tblDocs = "BO_DOCS_LISTE"
 
@@ -184,7 +184,32 @@ if (True) :
         print("Comptage import : " + str(cursor.fetchone()[0]))
         
         ## Historisation 
-        sql = "INSERT INTO BO_DOCS_MODIFS (RUN_ID, CR_ID, SI_ID, DT_MODIF, D_MODIF) SELECT RUN_ID, CR_ID, SI_ID, DT_MODIF, SUBSTR(DT_MODIF, 7, 4) || SUBSTR(DT_MODIF, 4, 2) || SUBSTR(DT_MODIF, 1, 2)  FROM BO_DOCS_LISTE"
+        # Dans le cas de BO_DOCS_MODIFS vide,
+        # Sqlite ne sait pas utiliser une sous requete dans COALESCE()
+        # SELECT coalesce(select max(DT_MODIF) FROM BO_DOCS_MODIFS, '1970-01-01 00:00:00') 
+        sql = "SELECT MAX(DT_MODIF) FROM BO_DOCS_MODIFS"
+        cursor.execute(sql)
+        updateMax = cursor.fetchone()[0]
+        print(updateMax)
+        if (updateMax is None) :
+            print("Table BO_DOCS_MODIFS vide")
+            updateMax = '1970-01-01 00:00:00'
+        else :
+            updateMax = str(updateMax)
+        # sql = "INSERT INTO BO_DOCS_MODIFS (RUN_ID, CR_ID, SI_ID, DT_MODIF, D_MODIF) SELECT RUN_ID, CR_ID, SI_ID, DT_MODIF, SUBSTR(DT_MODIF, 7, 4) || SUBSTR(DT_MODIF, 4, 2) || SUBSTR(DT_MODIF, 1, 2) AS ""D_MODIF""  FROM BO_DOCS_LISTE"
+        sql = """
+        INSERT INTO BO_DOCS_MODIFS (RUN_ID, CR_ID, SI_ID, DT_MODIF, D_MODIF) 
+        SELECT RUN_ID, CR_ID, SI_ID, 
+        DATETIME(SUBSTR(SI_UPDATE_TS, 7, 4) || '-' || SUBSTR(SI_UPDATE_TS, 4, 2) || '-' || SUBSTR(SI_UPDATE_TS, 1, 2) || " " || 
+            SUBSTR(SI_UPDATE_TS, 12, 2) || ':' || SUBSTR(SI_UPDATE_TS, 15, 2) || ':' || SUBSTR(SI_UPDATE_TS, 18, 2)) as "DT_MODIF",
+        CAST(SUBSTR(SI_UPDATE_TS, 7, 4) || SUBSTR(SI_UPDATE_TS, 4, 2) || SUBSTR(SI_UPDATE_TS, 1, 2) AS INTEGER) AS "D_MODIF"  
+        FROM BO_DOCS_LISTE
+        WHERE 
+        DATETIME(SUBSTR(SI_UPDATE_TS, 7, 4) || '-' || SUBSTR(SI_UPDATE_TS, 4, 2) || '-' || SUBSTR(SI_UPDATE_TS, 1, 2) || " " || 
+            SUBSTR(SI_UPDATE_TS, 12, 2) || ':' || SUBSTR(SI_UPDATE_TS, 15, 2) || ':' || SUBSTR(SI_UPDATE_TS, 18, 2)) 
+        > '"""
+        sql = sql + updateMax + "'"
+        print("SQL HISTO = [" + sql + "]")
         cursor.execute(sql)
         sql = "SELECT COUNT(*) FROM BO_DOCS_MODIFS"
         cursor.execute(sql)
